@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codestatebkend
+  labels:
+    app: codestatereader
+    tier: backend
+    version: v2
+spec:
+  selector:
+    matchLabels:
+      app: codestatereader
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: codestatereader
+    spec:
+      containers:
+        - name: codestatebkend
+          image:  gcr.io/anthos-poc-252613/codestatebkend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: codestatebkend
+spec:
+  selector:
+    app: codestatereader
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+  type: LoadBalancer
